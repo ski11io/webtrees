@@ -15,47 +15,29 @@
  */
 namespace Fisharebest\Webtrees;
 
-use Fisharebest\Webtrees\Http\Controllers\LoginController;
-
 /**
- * Defined in session.php
- *
- * @global Tree $WT_TREE
+ * Simple PHP templating system.
  */
-global $WT_TREE;
+class View {
+	/**
+	 * Render a view, using the supplied data.
+	 *
+	 * @param string  $path
+	 * @param mixed[] $data
+	 *
+	 * @return string
+	 */
+	public static function render($path, array $data = []) {
+		$filename = WT_ROOT . 'resources/views/' . $path . '.php';
+		extract($data);
 
-define('WT_SCRIPT_NAME', 'login.php');
-require './includes/session.php';
+		// Every form will want one of these
+		$csrf_field = Filter::getCsrf();
+		$csrf_token = Filter::getCsrfToken();
+		
+		ob_start();
+		require $filename;
 
-$controller = new LoginController;
-
-switch (Filter::get('route')) {
-default:
-case 'login':
-	$controller->loginPage($WT_TREE);
-	break;
-
-case 'login-action':
-	$controller->loginAction($WT_TREE);
-	break;
-
-case 'logout':
-	$controller->logoutAction();
-	break;
-
-case 'password-reset':
-	$controller->passwordResetPage();
-	break;
-
-case 'password-reset-action':
-	$controller->passwordResetAction($WT_TREE);
-	break;
-
-case 'registration-page':
-	$controller->registrationPage();
-	break;
-
-case 'registration-action':
-	$controller->registrationAction($WT_TREE);
-	break;
+		return ob_get_clean();
+	}
 }

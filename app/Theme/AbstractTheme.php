@@ -1555,7 +1555,7 @@ abstract class AbstractTheme {
 	 * @return Menu|null
 	 */
 	protected function menuLogin() {
-		if (Auth::check() || WT_SCRIPT_NAME === 'login.php') {
+		if (Auth::check()) {
 			return null;
 		} else {
 			return new Menu(I18N::translate('Sign in'), WT_LOGIN_URL . '?url=' . rawurlencode(Functions::getQueryUrl()), 'menu-login', array('rel' => 'nofollow'));
